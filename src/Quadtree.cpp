@@ -28,12 +28,12 @@ void Quadtree::clear()
 {
     objects_.clear();
 
-    for (size_type i = 0; i < nodes_.size(); ++i)
+    for (auto& node : nodes_)
     {
-        if (nodes_[i] != nullptr)
+        if (node != nullptr)
         {
-            nodes_[i]->clear();
-            nodes_[i] = nullptr;
+            node->clear();
+            node = nullptr;
         }
     }
 }
@@ -153,9 +153,9 @@ void Quadtree::split()
     //  II  I
     // III IV
 
-    nodes_[0] = new Quadtree(level + 1, Rectangle(x + mid_w, y + mid_h, mid_w, mid_h));
-    nodes_[1] = new Quadtree(level + 1, Rectangle(x, y + mid_h, mid_w, mid_h));
+    nodes_[0] = new Quadtree(level + 1, Rectangle(x + mid_w, y + mid_h, mid_w, mid_h), threshold, max_level);
+    nodes_[1] = new Quadtree(level + 1, Rectangle(x, y + mid_h, mid_w, mid_h), threshold, max_level);
 
-    nodes_[2] = new Quadtree(level + 1, Rectangle(x, y, mid_w, mid_h));
-    nodes_[3] = new Quadtree(level + 1, Rectangle(x + mid_w, y, mid_w, mid_h));
+    nodes_[2] = new Quadtree(level + 1, Rectangle(x, y, mid_w, mid_h), threshold, max_level);
+    nodes_[3] = new Quadtree(level + 1, Rectangle(x + mid_w, y, mid_w, mid_h), threshold, max_level);
 }

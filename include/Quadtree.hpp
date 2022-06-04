@@ -80,4 +80,20 @@ private:
     void split();
 };
 
+/*!
+Iteration by the quatree and applying function
+*/
+template <class Function,
+          meta::require<meta::is_callable<Function, Quadtree*>::value> = 0>
+void iterate(Quadtree* quadtree, Function function)
+{
+    if (quadtree == nullptr)
+        return;
+
+    function(quadtree);
+
+    for (const auto& node : quadtree->nodes())
+        iterate(node, function);
+}
+
 #endif // QUAD_TREE_HPP
