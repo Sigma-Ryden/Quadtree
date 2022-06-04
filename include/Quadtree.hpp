@@ -11,64 +11,73 @@
 class Quadtree
 {
 public:
-    using size_type = std::size_t;
-    using index_type = int;
+    using size_type                 = std::size_t;
+    using index_type                = int;
+
+    template <typename T>
+    using Array                     = std::array<T, 4>;
 
 private:
-    static constexpr size_type number_of_nodes = 4;
-
-    const size_type max_objects_in_node_;
-    const size_type max_depth_level_;
-
-    index_type level_;
-    Rectangle area_;
-
-    Container<IObject*> objects_;
-
-    std::array<Quadtree*, number_of_nodes> nodes_;
+    Array<Quadtree*> nodes_;        ///< Array of the child node
+    Container<IObject*> objects_;   ///< All objects located in the quadtree
 
 public:
-    Quadtree(
-        index_type level,
-        const Rectangle& area,
-        size_type max_objects_in_node = 16,
-        size_type max_depth_level = 8);
+    const Rectangle area;           ///< The aree used by the quadtree
+
+    const size_type level;          ///< The level of the quadtree
+    const size_type max_level;      ///< Max depth level of the subnode
+    const size_type threshold;      ///< Max objects in the quadtree
+
+public:
+    Quadtree(index_type level,
+             const Rectangle& area,
+             size_type max_objects_in_node = 16,
+             size_type max_depth_level = 8);
 
     Quadtree(const Quadtree&) = default;
     Quadtree(Quadtree&&) noexcept = default;
 
     ~Quadtree();
 
-public:
+public:    
     /*!
-    Clears the Quadtree
+    Return all objects in the quadtree.
+    */
+    auto objects() const noexcept -> const Container<IObject*>& { return objects_; }
+
+    /*!
+    Return container of child nodes.
+    */
+    auto nodes() const noexcept -> const Array<Quadtree*> { return nodes_; }
+
+    /*!
+    Clears the quadtree.
     */
     void clear();
 
     /*!
-    Insert the object into the Quadtree. If the node
-    exceeds the capacity, it will split and add all
-    objects to their corresponding nodes.
+    Inserts the object into the child node if it fits,
+    otherwise the object will be added to the parent node.
     */
     void insert(IObject* object);
 
     /*!
-    Return all objects that could collide with the given object
+    Return all objects that could collide with the given object.
     */
     auto retrieve(Container<IObject*>& objects, IObject* object) -> Container<IObject*>&;
+    auto retrieve(IObject* object) -> Container<IObject*>;
+
+    /*!
+    Returns the index of the child node in which the object resides.
+    Otherwise, returns -1 if the object is in the parent node.
+    */
+    auto index(IObject* object) -> index_type;
 
 private:
     /*!
-    Splits the node into 4 subnodes
+    Splits the node into 4 subnodes.
     */
     void split();
-
-    /*!
-    Determine which node the object belongs to. -1 means
-    object cannot completely fit within a child node and is part
-    of the parent node
-    */
-    index_type getIndex(IObject* object);
 };
 
 #endif // QUAD_TREE_HPP

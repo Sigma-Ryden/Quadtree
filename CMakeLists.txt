@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME} main.cpp
     src/Quadtree.cpp
     include/Object/Base.hpp
     include/Object/Rectangle.hpp
-    include/Object/Cyrcle.hpp
+    include/Object/Circle.hpp
     include/Container.hpp
     include/Detail/Meta.hpp
     include/Vector2.hpp

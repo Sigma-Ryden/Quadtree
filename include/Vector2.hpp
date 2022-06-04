@@ -14,7 +14,7 @@ struct Vector2<T, meta::when<std::is_arithmetic<T>::value>>
     precision_type x;
     precision_type y;
 
-    Vector2() : x(0.f), y(0.f) {}
+    Vector2() : x(0.), y(0.) {}
     Vector2(precision_type x, precision_type y) : x(x), y(y) {}
 };
 
