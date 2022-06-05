@@ -79,6 +79,30 @@ Output:
 
  #
 ```
+## Explanation:
+
+Since we were created area like this:
+```C++
+auto area = Rectangle(2, 0, 6, 5);
+```
+It will hide only given area below:
+```C++
+4 . . # # . .
+3 # # # # . .
+2 # # # # . .
+1 # # . . . .
+0 # # . . # #
+  2 3 4 5 6 7
+```
+But only 3 objects are fully included in the given area:
+```C++
+4 . . . . . .
+3 . . # # . .
+2 . . # # . .
+1 . . . . . .
+0 . . . . # #
+  2 3 4 5 6 7
+```
 
 You can find other examples [here](https://github.com/Sigma-Ryden/Quadtree/tree/master/test).
 
