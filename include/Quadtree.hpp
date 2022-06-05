@@ -41,48 +41,52 @@ public:
 
 public:    
     /*!
-    Return all objects in the quadtree.
-    */
-    auto objects() const noexcept -> const Container<IObject*>& { return objects_; }
+     * \brief Return all objects in the quadtree.
+     */
+    const Container<IObject*>& objects() const noexcept { return objects_; }
 
     /*!
-    Return container of child nodes.
-    */
-    auto nodes() const noexcept -> const Array<Quadtree*> { return nodes_; }
+     * \brief Return container of child nodes.
+     */
+    const Array<Quadtree*> nodes() const noexcept { return nodes_; }
 
     /*!
-    Clears the quadtree.
-    */
+     * \brief Clears the quadtree.
+     */
     void clear();
 
     /*!
-    Inserts the object into the child node if it fits,
-    otherwise the object will be added to the parent node.
-    */
+     * \brief Inserts the object into the child node if it fits.
+     * Otherwise the object will be added to the parent node.
+     */
     void insert(IObject* object);
 
     /*!
-    Return all objects that could collide with the given object.
-    */
-    auto retrieve(Container<IObject*>& objects, IObject* object) -> Container<IObject*>&;
-    auto retrieve(IObject* object) -> Container<IObject*>;
-
-    /*!
-    Returns the index of the child node in which the object resides.
-    Otherwise, returns -1 if the object is in the parent node.
-    */
+     * \brief Returns the index of the child node in which the object resides.
+     * Otherwise, returns -1 if the object is in the parent node.
+     */
     auto index(IObject* object) -> index_type;
 
 private:
     /*!
-    Splits the node into 4 subnodes.
-    */
+     * \brief Splits the node into 4 subnodes.
+     */
     void split();
 };
 
 /*!
-Iteration by the quatree nodes.
-*/
+ * \brief Save all objects into the container, that could collide with the given object.
+ */
+void reach(Quadtree* quadtree, IObject* object, Container<IObject*>& objects);
+
+/*!
+ * \brief Return all objects that could collide with the given object.
+ */
+Container<IObject*> reach(Quadtree* quadtree, IObject* object);
+
+/*!
+ * \brief Iteration by the quatree nodes.
+ */
 template <class Function,
           meta::require<meta::is_callable<Function, Quadtree*>::value> = 0>
 void iterate(Quadtree* quadtree, Function function)
@@ -97,8 +101,8 @@ void iterate(Quadtree* quadtree, Function function)
 }
 
 /*!
-Iteration by the objects in the certain area of the quadtree.
-*/
+ * \brief Iteration by the objects in the certain area of the quadtree.
+ */
 template <class Function,
           meta::require<meta::is_callable<Function, IObject*>::value> = 0>
 void iterate(Quadtree* quadtree, Rectangle* area, Function function)

@@ -45,20 +45,20 @@ int Quadtree::index(IObject* object)
 {
     index_type index = -1;
 
-    auto obj_x1 = object->location().x;
-    auto obj_y1 = object->location().y;
+    auto obj_x1 = x1(*object);
+    auto obj_y1 = y1(*object);
 
-    auto obj_x2 = obj_x1 + object->width();
-    auto obj_y2 = obj_y1 + object->height();
+    auto obj_x2 = x2(*object);
+    auto obj_y2 = y2(*object);
 
-    auto horizontal_point = area->location().x;
-    auto vertical_point   = area->location().y;
+    auto horizontal_point = x1(*area);
+    auto vertical_point   = y1(*area);
 
-    auto horizontal_whole_point = horizontal_point + area->width();
-    auto vertical_whole_point   = vertical_point + area->height();
+    auto horizontal_whole_point = x2(*area);
+    auto vertical_whole_point   = y2(*area);
 
-    auto horizontal_mid_point = horizontal_point + area->width() * 0.5;
-    auto vertical_mid_point   = vertical_point + area->height() * 0.5;
+    auto horizontal_mid_point = horizontal_point + width(*area) * 0.5;
+    auto vertical_mid_point   = vertical_point + height(*area) * 0.5;
 
     // Object can completely fit within the top quadrants
     bool top_quadrant = (obj_y1 >= vertical_mid_point and obj_y2 <= vertical_whole_point);
@@ -89,67 +89,47 @@ int Quadtree::index(IObject* object)
 
 void Quadtree::insert(IObject* object)
 {
-    if (nodes_[0] != nullptr) // checking for nodes
+    index_type idx;
+    if (nodes_[0] != nullptr) // checking for child nodes
     {
-        index_type idx = index(object);
+        idx = index(object);
 
         if (idx != -1)
-        {
             nodes_[idx]->insert(object);
-            return;
-        }
+
+        return;
     }
 
     objects_.add(object);
 
     if (objects_.size() > threshold and level < max_level)
     {
-        split();
+        if (nodes_[0] == nullptr) split();
 
         size_type i = 0;
         while (i < objects_.size())
         {
-            auto idx = index(objects_[i]);
-
+            idx = index(objects_[i]);
             if (idx != -1)
             {
                 nodes_[idx]->insert(objects_[i]);
                 objects_.remove(i);
             }
-            else  ++i;
+            else
+            {
+                ++i;
+            }
         }
     }
 }
 
-auto Quadtree::retrieve(Container<IObject*>& objects, IObject* object) -> Container<IObject*>&
-{
-    auto idx = index(object);
-
-    if (idx != -1 && nodes_[0] != nullptr)
-        nodes_[idx]->retrieve(objects, object);
-
-    objects.add(objects_);
-
-    return objects;
-}
-
-auto Quadtree::retrieve(IObject* object) -> Container<IObject*>
-{
-    Container<IObject*> objects;
-    objects.reserve(threshold);
-
-    retrieve(objects, object);
-
-    return objects;
-}
-
 void Quadtree::split()
 {
-    auto mid_w = area->width() * 0.5;
-    auto mid_h = area->height() * 0.5;
+    auto mid_w = width(*area) * 0.5;
+    auto mid_h = height(*area) * 0.5;
 
-    auto x = area->location().x;
-    auto y = area->location().y;
+    auto x = x1(*area);
+    auto y = y1(*area);
 
     // Order:
     //  II  I
@@ -160,4 +140,16 @@ void Quadtree::split()
 
     nodes_[2] = new Quadtree(level + 1, new Rectangle(x, y, mid_w, mid_h), threshold, max_level);
     nodes_[3] = new Quadtree(level + 1, new Rectangle(x + mid_w, y, mid_w, mid_h), threshold, max_level);
+}
+
+void reach(Quadtree* quad, IObject* object, Container<IObject*>& storage)
+{
+    auto idx = quad->index(object);
+
+    auto& nodes = quad->nodes();
+
+    if (idx != -1 and nodes[0] != nullptr)
+        reach(nodes[idx], object, storage);
+
+    storage.add(quad->objects());
 }

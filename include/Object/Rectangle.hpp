@@ -7,33 +7,29 @@ class Rectangle : public IObject
 {
 private:
     Vector2 location_;
-
-    precision_type width_;
-    precision_type height_;
+    Shape shape_;
 
 public:
-    Rectangle() noexcept : Rectangle(0., 0., 0., 0.) {}
+    Rectangle() noexcept : Rectangle(Vector2(), Shape()) {}
 
-    Rectangle(precision_type width, precision_type height)
-        : Rectangle(0., 0., width, height) {}
+    Rectangle(const Vector2& location, const Shape& shape)
+        : location_(location), shape_(shape) {}
 
     Rectangle(precision_type x, precision_type y, precision_type width, precision_type height)
-        : location_(x, y), width_(width), height_(height) {}
+        : location_(x, y), shape_(width, height) {}
 
     const Vector2& location() const noexcept override { return location_; }
-
-    precision_type width() const noexcept override { return width_; }
-    precision_type height() const noexcept override { return height_; }
+    const Shape& shape() const noexcept override { return shape_; }
 };
 
 /*!
-Return true if area A intersects area B.
-*/
+ * \brief Return true if area A intersects area B.
+ */
 bool intersect(const Rectangle& A, const Rectangle& B);
 
 /*!
-Return true if area includes object.
-*/
+ * \brief Return true if area includes object.
+ */
 bool include(const Rectangle& area, const IObject& object);
 
 #endif // OBJECT_RECTANGLE_HPP

@@ -7,22 +7,19 @@ class Circle : public IObject
 {
 private:
     Vector2 location_;
-
-    precision_type diameter_;
+    Shape shape_;
 
 public:
-    Circle() noexcept : Circle(0., 0., 0.) {}
+    Circle() noexcept : Circle(Vector2(), Shape()) {}
 
-    Circle(precision_type diameter)
-        : Circle(0., 0., diameter) {}
+    Circle(const Vector2& location, const Shape& shape)
+        : location_(location), shape_(shape) {}
 
-    Circle(precision_type x, precision_type y, precision_type diameter)
-        : location_(x, y), diameter_(diameter) {}
+    Circle(precision_type x, precision_type y, precision_type width, precision_type height)
+        : location_(x, y), shape_(width, height) {}
 
     const Vector2& location() const noexcept override { return location_; }
-
-    precision_type width() const noexcept override { return diameter_; }
-    precision_type height() const noexcept override { return diameter_; }
+    const Shape& shape() const noexcept override { return shape_; }
 };
 
 #endif // OBJECT_CIRCLE_HPP
