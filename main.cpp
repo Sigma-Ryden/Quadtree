@@ -3,21 +3,30 @@
 #include <Quadtree.hpp>
 #include <Object/Circle.hpp>
 
-int main()
+void test()
 {
-    Quadtree quad = Quadtree(0, Rectangle(20, 30), 1);
+    Quadtree quad = Quadtree(0, Rectangle(8, 8), 1);
 
-    quad.insert(new Circle(2, 3, 5));
-    quad.insert(new Circle(3, 2, 3));
-    quad.insert(new Circle(2, 2, 2));
-    quad.insert(new Circle(3, 3, 1));
-    quad.insert(new Circle(3, 3, 0.5));
+    /*
+    7 . . . . . . . .
+    6 . . . . . . . .
+    5 . . . . # # # .
+    4 . . . . # # . .
+    3 # # # # # # . .
+    2 # # # # # # . .
+    1 # # # # . . . .
+    0 # # # # . . # #
+      0 1 2 3 4 5 6 7
+    */
+    quad.insert(new Rectangle(4, 4, 2, 2));
+    quad.insert(new Rectangle(6, 5, 1, 1));
 
-    quad.insert(new Rectangle(7, 1, 7, 2));
-    quad.insert(new Rectangle(3, 2, 2, 2));
+    quad.insert(new Rectangle(0, 0, 4, 4));
 
-    quad.insert(new Circle(2, 2, 5));
-    quad.insert(new Rectangle(17, 15, 1, 1));
+    quad.insert(new Rectangle(4, 2, 2, 2));
+
+    quad.insert(new Rectangle(6, 0, 1, 1));
+    quad.insert(new Rectangle(7, 0, 1, 1));
 
     auto f = [](Quadtree* quadtree)
     {
@@ -25,6 +34,11 @@ int main()
     };
 
     iterate(&quad, f);
+}
+
+int main()
+{
+    test();
 
     return 0;
 }

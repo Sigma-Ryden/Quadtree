@@ -59,16 +59,16 @@ int Quadtree::index(IObject* object)
     auto vertical_mid_point   = vertical_point + area.height() * 0.5;
 
     // Object can completely fit within the top quadrants
-    bool top_quadrant = (obj_y1 > vertical_mid_point and obj_y2 < vertical_whole_point);
+    bool top_quadrant = (obj_y1 >= vertical_mid_point and obj_y2 <= vertical_whole_point);
 
     // Object can completely fit within the bottom quadrants
-    bool bottom_quadrant = (obj_y1 > vertical_point and obj_y2 < vertical_mid_point);
+    bool bottom_quadrant = (obj_y1 >= vertical_point and obj_y2 <= vertical_mid_point);
 
     // Object can completely fit within the left quadrants
-    bool left_quadrant = (obj_x1 > horizontal_point and obj_x2 < horizontal_mid_point);
+    bool left_quadrant = (obj_x1 >= horizontal_point and obj_x2 <= horizontal_mid_point);
 
     // Object can completely fit within the right quadrants
-    bool right_quadrant = (obj_x1 > horizontal_mid_point and obj_x2 < horizontal_whole_point);
+    bool right_quadrant = (obj_x1 >= horizontal_mid_point and obj_x2 <= horizontal_whole_point);
 
     if (top_quadrant and right_quadrant)
         index = 0;
