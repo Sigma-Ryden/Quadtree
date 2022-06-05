@@ -18,4 +18,9 @@ public:
     virtual precision_type height() const noexcept = 0;
 };
 
+IObject::precision_type x1(const IObject& object);
+IObject::precision_type x2(const IObject& object);
+IObject::precision_type y1(const IObject& object);
+IObject::precision_type y2(const IObject& object);
+
 #endif // IOBJECT_HPP

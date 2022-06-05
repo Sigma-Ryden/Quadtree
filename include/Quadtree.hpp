@@ -22,7 +22,7 @@ private:
     Container<IObject*> objects_;   ///< All objects located in the quadtree
 
 public:
-    const Rectangle area;           ///< The aree used by the quadtree
+    const Rectangle* area;          ///< The aree used by the quadtree
 
     const size_type level;          ///< The level of the quadtree
     const size_type max_level;      ///< Max depth level of the subnode
@@ -30,7 +30,7 @@ public:
 
 public:
     Quadtree(index_type level,
-             const Rectangle& area,
+             Rectangle* area,
              size_type max_objects_in_node = 16,
              size_type max_depth_level = 8);
 
@@ -81,7 +81,7 @@ private:
 };
 
 /*!
-Iteration by the quatree and applying function
+Iteration by the quatree nodes.
 */
 template <class Function,
           meta::require<meta::is_callable<Function, Quadtree*>::value> = 0>
@@ -94,6 +94,29 @@ void iterate(Quadtree* quadtree, Function function)
 
     for (const auto& node : quadtree->nodes())
         iterate(node, function);
+}
+
+/*!
+Iteration by the objects in the certain area of the quadtree.
+*/
+template <class Function,
+          meta::require<meta::is_callable<Function, IObject*>::value> = 0>
+void iterate(Quadtree* quadtree, Rectangle* area, Function function)
+{
+    if (quadtree == nullptr)
+        return;
+
+    if (intersect(*quadtree->area, *area))
+    {
+        for (auto& object : quadtree->objects())
+        {
+            if (include(*area, *object))
+                function(object);
+        }
+    }
+
+    for (const auto& node : quadtree->nodes())
+        iterate(node, area, function);
 }
 
 #endif // QUAD_TREE_HPP

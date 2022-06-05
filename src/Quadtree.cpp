@@ -2,7 +2,7 @@
 
 Quadtree::Quadtree(
     index_type level,
-    const Rectangle& area,
+    Rectangle* area,
     size_type max_objects_in_node,
     size_type max_depth_level)
         : nodes_()
@@ -22,6 +22,8 @@ Quadtree::~Quadtree()
 
     for (auto& node : nodes_)
         delete node;
+
+    delete area;
 }
 
 void Quadtree::clear()
@@ -49,14 +51,14 @@ int Quadtree::index(IObject* object)
     auto obj_x2 = obj_x1 + object->width();
     auto obj_y2 = obj_y1 + object->height();
 
-    auto horizontal_point = area.location().x;
-    auto vertical_point   = area.location().y;
+    auto horizontal_point = area->location().x;
+    auto vertical_point   = area->location().y;
 
-    auto horizontal_whole_point = horizontal_point + area.width();
-    auto vertical_whole_point   = vertical_point + area.height();
+    auto horizontal_whole_point = horizontal_point + area->width();
+    auto vertical_whole_point   = vertical_point + area->height();
 
-    auto horizontal_mid_point = horizontal_point + area.width() * 0.5;
-    auto vertical_mid_point   = vertical_point + area.height() * 0.5;
+    auto horizontal_mid_point = horizontal_point + area->width() * 0.5;
+    auto vertical_mid_point   = vertical_point + area->height() * 0.5;
 
     // Object can completely fit within the top quadrants
     bool top_quadrant = (obj_y1 >= vertical_mid_point and obj_y2 <= vertical_whole_point);
@@ -143,19 +145,19 @@ auto Quadtree::retrieve(IObject* object) -> Container<IObject*>
 
 void Quadtree::split()
 {
-    auto mid_w = area.width() * 0.5;
-    auto mid_h = area.height() * 0.5;
+    auto mid_w = area->width() * 0.5;
+    auto mid_h = area->height() * 0.5;
 
-    auto x = area.location().x;
-    auto y = area.location().y;
+    auto x = area->location().x;
+    auto y = area->location().y;
 
     // Order:
     //  II  I
     // III IV
 
-    nodes_[0] = new Quadtree(level + 1, Rectangle(x + mid_w, y + mid_h, mid_w, mid_h), threshold, max_level);
-    nodes_[1] = new Quadtree(level + 1, Rectangle(x, y + mid_h, mid_w, mid_h), threshold, max_level);
+    nodes_[0] = new Quadtree(level + 1, new Rectangle(x + mid_w, y + mid_h, mid_w, mid_h), threshold, max_level);
+    nodes_[1] = new Quadtree(level + 1, new Rectangle(x, y + mid_h, mid_w, mid_h), threshold, max_level);
 
-    nodes_[2] = new Quadtree(level + 1, Rectangle(x, y, mid_w, mid_h), threshold, max_level);
-    nodes_[3] = new Quadtree(level + 1, Rectangle(x + mid_w, y, mid_w, mid_h), threshold, max_level);
+    nodes_[2] = new Quadtree(level + 1, new Rectangle(x, y, mid_w, mid_h), threshold, max_level);
+    nodes_[3] = new Quadtree(level + 1, new Rectangle(x + mid_w, y, mid_w, mid_h), threshold, max_level);
 }

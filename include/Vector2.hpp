@@ -18,4 +18,16 @@ struct Vector2<T, meta::when<std::is_arithmetic<T>::value>>
     Vector2(precision_type x, precision_type y) : x(x), y(y) {}
 };
 
+template <typename T, meta::require<std::is_arithmetic<T>::value> = 0>
+constexpr bool cross(T a1, T a2, T b1, T b2)
+{
+    return a1 < b2 and b1 < a2;
+}
+
+template <typename T, meta::require<std::is_arithmetic<T>::value> = 0>
+constexpr bool include(T a1, T a2, T b1, T b2)
+{
+    return a1 <= b1 and a2 >= b2;
+}
+
 #endif // VECTOR2_HPP

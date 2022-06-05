@@ -26,4 +26,14 @@ public:
     precision_type height() const noexcept override { return height_; }
 };
 
+/*!
+Return true if area A intersects area B.
+*/
+bool intersect(const Rectangle& A, const Rectangle& B);
+
+/*!
+Return true if area includes object.
+*/
+bool include(const Rectangle& area, const IObject& object);
+
 #endif // OBJECT_RECTANGLE_HPP

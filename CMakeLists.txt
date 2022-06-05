@@ -11,6 +11,8 @@ include_directories(src)
 add_executable(${PROJECT_NAME} main.cpp
     src/Quadtree.cpp
     include/Object/Base.hpp
+    src/Object/Base.cpp
+    src/Object/Rectangle.cpp
     include/Object/Rectangle.hpp
     include/Object/Circle.hpp
     include/Container.hpp
