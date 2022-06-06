@@ -29,3 +29,13 @@ IObject::precision_type y2(const IObject& object)
 {
     return y1(object) + height(object);
 }
+
+IObject::precision_type centerX(const IObject& object)
+{
+    return x1(object) + width(object) * 0.5;
+}
+
+IObject::precision_type centerY(const IObject& object)
+{
+    return y1(object) + height(object) * 0.5;
+}
