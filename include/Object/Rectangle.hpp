@@ -28,8 +28,13 @@ public:
 bool intersect(const Rectangle& A, const Rectangle& B);
 
 /*!
- * \brief Return true if area includes object.
+ * \brief Return true if area partially includes object.
  */
 bool include(const Rectangle& area, const IObject& object);
+
+/*!
+ * \brief Return true if area fully includes object.
+ */
+bool include_all(const Rectangle& area, const IObject& object);
 
 #endif // OBJECT_RECTANGLE_HPP

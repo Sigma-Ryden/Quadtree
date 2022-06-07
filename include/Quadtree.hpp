@@ -17,6 +17,8 @@ public:
     template <typename T>
     using Array                     = std::array<T, 4>;
 
+    using Indexing                  = index_type (Quadtree::*)(IObject*) const;
+
 private:
     Array<Quadtree*> nodes_;        ///< Array of the child node
     Container<IObject*> objects_;   ///< All objects located in the quadtree
@@ -59,13 +61,19 @@ public:
      * \brief Inserts the object into the child node if it fits.
      * Otherwise the object will be added to the parent node.
      */
-    void insert(IObject* object);
+    void insert(IObject* object, Indexing indexing = &Quadtree::index);
 
     /*!
-     * \brief Returns the index of the child node in which the object resides.
+     * \brief Returns the index of the child node in which the object `fully` resides.
      * Otherwise, returns -1 if the object is in the parent node.
      */
-    auto index(IObject* object) -> index_type;
+    index_type index(IObject* object) const noexcept;
+
+    /*!
+     * \brief Returns the index of the child node in which the object `partially` resides.
+     * Otherwise, returns -1 if the object is in the parent node.
+     */
+    index_type weak_index(IObject* object) const noexcept;
 
 private:
     /*!
@@ -77,12 +85,19 @@ private:
 /*!
  * \brief Save all objects into the container, that could collide with the given object.
  */
-void reach(Quadtree* quadtree, IObject* object, Container<IObject*>& objects);
+void reach(
+    Quadtree* quadtree,
+    IObject* object,
+    Container<IObject*>& objects,
+    Quadtree::Indexing indexing = &Quadtree::index);
 
 /*!
  * \brief Return all objects that could collide with the given object.
  */
-Container<IObject*> reach(Quadtree* quadtree, IObject* object);
+Container<IObject*> reach(
+    Quadtree* quadtree,
+    IObject* object,
+    Quadtree::Indexing indexing = &Quadtree::index);
 
 /*!
  * \brief Iteration by the quatree nodes.
@@ -103,9 +118,10 @@ void iterate(Quadtree* quadtree, Function function)
 /*!
  * \brief Iteration by the objects in the certain area of the quadtree.
  */
-template <class Function,
-          meta::require<meta::is_callable<Function, IObject*>::value> = 0>
-void iterate(Quadtree* quadtree, Rectangle* area, Function function)
+template <class Function, class Capture,
+          meta::require<meta::is_callable<Function, IObject*>::value and
+                        meta::is_callable<Capture, const Rectangle&, const IObject&>::value> = 0>
+void iterate(Quadtree* quadtree, Rectangle* area, Function function, Capture capture = include_all)
 {
     if (quadtree == nullptr)
         return;
@@ -114,7 +130,7 @@ void iterate(Quadtree* quadtree, Rectangle* area, Function function)
     {
         for (auto& object : quadtree->objects())
         {
-            if (include(*area, *object))
+            if (capture(*area, *object))
                 function(object);
         }
     }

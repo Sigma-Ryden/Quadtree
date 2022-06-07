@@ -70,7 +70,7 @@ void generate_2d_level(std::size_t width, std::size_t height, std::size_t number
 
 int main()
 {
-    generate_2d_level(16, 16, 30);
+    generate_2d_level(16, 16, 50);
 
     return 0;
 }
