@@ -107,4 +107,4 @@ But only 3 objects are fully included in the given area:
 You can find other examples [here](https://github.com/Sigma-Ryden/Quadtree/tree/master/test).
 
 ## License:
-This library is an open source project licensed under: [MIT](https://opensource.org/licenses/MIT).
+This is an open source project licensed under: [MIT](https://opensource.org/licenses/MIT).
